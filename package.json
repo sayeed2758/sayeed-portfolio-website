@@ -20,5 +20,8 @@
     "framer-motion": "latest",
     "lucide-react": "latest"
   },
-  "devDependencies": {}
-}
+  "devDependencies": {
+  "@vitejs/plugin-react": "latest",
+  "vite": "latest"
+  }
+
