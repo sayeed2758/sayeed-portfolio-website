@@ -1,58 +1,57 @@
+import { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
 
-import { useEffect, useState } from 'react';
-
-const NetflixPreloader = () => {
-  const [visible, setVisible] = useState(true);
+const MinimalPreloader = ({ onComplete }) => {
+  const preloaderRef = useRef(null);
+  const contentRef = useRef(null);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setVisible(false);
-    }, 1200);
+    const tl = gsap.timeline({
+      onComplete: () => {
+        if (onComplete) onComplete();
+      }
+    });
 
-    return () => window.clearTimeout(timer);
-  }, []);
-
-  if (!visible) return null;
+    tl.set(preloaderRef.current, { autoAlpha: 1 })
+      .fromTo(
+        contentRef.current,
+        { scale: 0.95, opacity: 0, filter: "blur(8px)" },
+        { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.8, ease: "power3.out" }
+      )
+      .to(contentRef.current, {
+        scale: 1.05,
+        opacity: 0,
+        filter: "blur(10px)",
+        duration: 0.4,
+        ease: "power2.in",
+        delay: 0.6
+      })
+      .to(preloaderRef.current, {
+        opacity: 0,
+        duration: 0.5,
+        ease: "power2.inOut"
+      });
+  }, [onComplete]);
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#10100f] text-[#f4f2ec]"
-      role="status"
-      aria-label="Loading Sayeed Portfolio"
+      ref={preloaderRef}
+      className="fixed inset-0 z-[9999] bg-[#050505] flex items-center justify-center select-none overflow-hidden"
     >
-      <div className="flex flex-col items-center">
-        <div className="relative mb-5 h-24 w-24 overflow-hidden rounded-full border-2 border-[#c4a46b] p-1">
-          <img
-            src="/shahid-sir.png"
-            alt=""
-            className="h-full w-full rounded-full object-cover object-top"
-          />
-        </div>
+      <div ref={contentRef} className="flex flex-col items-center gap-4">
+        {/* Minimal Red Indicator Dot */}
+        <div className="w-2.5 h-2.5 rounded-full bg-red-600 animate-ping"></div>
 
-        <p className="text-lg font-semibold tracking-[0.25em]">
-          SHAHID SIR
-        </p>
-
-        <p className="mt-2 text-[9px] tracking-[0.2em] text-white/50">
-          TEACHER · EDUCATIONAL CONTENT CREATOR
-        </p>
-
-        <div
-          className="mt-7 h-px w-36 overflow-hidden bg-white/10"
-          aria-hidden="true"
+        {/* Minimal Typography */}
+        <h1 
+          className="text-2xl md:text-3xl font-black uppercase tracking-[0.3em] text-white"
+          style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
         >
-          <div className="h-full w-full origin-left animate-[loading_1.2s_ease-in-out_forwards] bg-[#c4a46b]" />
-        </div>
+          SUSHMITA
+        </h1>
       </div>
-
-      <style>{`
-        @keyframes loading {
-          from { transform: scaleX(0); }
-          to { transform: scaleX(1); }
-        }
-      `}</style>
     </div>
   );
 };
 
-export default NetflixPreloader;
+export default MinimalPreloader;
