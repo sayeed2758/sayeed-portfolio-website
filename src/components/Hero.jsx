@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import pictureImg from '../assets/Portfolio/picture.png';
+import pictureImg from '../assets/portfolio/picture.png';
 
 const Hero = () => {
   const sectionRef = useRef(null);
